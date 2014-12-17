@@ -1,0 +1,7 @@
+-- learn beautiful soup? For scraping
+    -- learn curl for post requests
+-- get web server running
+-- make a template, landing page
+-- build controller for main page, moving parsed data to the template
+
+curl -X POST https://banweb.pdx.edu/pls/oprd/bwckgens.p_proc_term_date
