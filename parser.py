@@ -3,8 +3,8 @@ import re
 
 
 def get_data_from_site(site):
-    responce = urllib2.urlopen(site)
-    html = responce.read()
+    response = urllib2.urlopen(site)
+    html = response.read()
     return html
 
 
@@ -30,28 +30,29 @@ def get_links(line):
     return re.findall('(?:.*?href.+?\#)(.+?)(?=\")', line)
 
 
-def parse_ufv_links(text):
+def parse_ufv_links(data):
     sub_names = []
     in_table = False
-    for line in text:
+    for line in data:
         in_table = table_check(in_table, line)
         if in_table:
             sub_names.append(get_links(line))
     return [x for x in sub_names if x]
 
 
-def parse_ufv_data(source):
-    with open(source, 'r') as f:
-        text = f.readlines()
-    links = parse_ufv_links(text)
+def parse_ufv_data(data):
+    links = parse_ufv_links(data)
+    return links
 
 
 def main():
     site = 'http://www.ufv.ca/arfiles/includes/201501-timetable-with-changes.htm'
     dest = 'ufv_class_data.html'
-    data = get_data_from_site(site)
-    store_data_locally(data, dest)
-    parse_ufv_data(dest)
+    # data = get_data_from_site(site)
+    # store_data_locally(data, dest)
+    with open('ufv_class_data.html', 'r') as f:
+        data = f.read()
+    parse_ufv_data(data)
 
 
 if __name__ == '__main__':
