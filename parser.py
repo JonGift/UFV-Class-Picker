@@ -56,20 +56,21 @@ def split_sections(data, links):
                     break
 
 
-def parse_ufv_data(data):
-    links = parse_ufv_links(data)
-    subject_data = split_sections(data, links)
+def parse_ufv_data(html_soup):
+    links = parse_ufv_links(html_soup.prettify())
+    subject_data = split_sections(html_soup, links)
     return links
 
 
 def main():
     site = 'http://www.ufv.ca/arfiles/includes/201501-timetable-with-changes.htm'
     dest = 'ufv_class_data.html'
-    data = str(get_data_from_site(site))
-    # store_data_locally(data, dest)
-    with open('ufv_class_data.html', 'rb') as f:
-        data = BeautifulSoup(f)
-    parse_ufv_data(data)
+    # html_data = get_data_from_site(site)
+    # html_soup = BeautifulSoup(html_data)
+    # store_data_locally(html_soup.pretify(), dest)
+    with open(dest,  'rb') as f:
+        html_soup = BeautifulSoup(f)
+    parse_ufv_data(html_soup)
 
 
 if __name__ == '__main__':
