@@ -1,6 +1,8 @@
 import urllib.request
 import re
 from bs4 import BeautifulSoup
+import pickle
+import sys; sys.setrecursionlimit(90000)
 
 
 def get_data_from_site(site):
@@ -42,23 +44,56 @@ def parse_ufv_links(data):
     return [x[0] for x in sub_names if x] # only returns lists that have data
 
 
-def split_sections(data, links):
+def split_sections(html_soup, links):
+    """returns the raw html of each block of subject data in the soup"""
+    links = links[:]
     subject_data = []
     buffer = []
-    for link in links:
-        for line in data.split():
-            if re.search(r'a.*?name.*?{}'.format(link), line):
-                buffer.append(line)
+    # html = html_soup.prettify().split('\n')
+    with open('ufv_class_data.html', 'r') as f: # TODO REMOVE
+        html = f.readlines()
+    for line in html:
+        if 'name' in line:
+            for link in links:
+                if re.search(r'a\s*name\s*=\s*\"{}'.format(link), line):
+                    if buffer:
+                        subject_data.append(buffer)
+                        buffer = []
+                    buffer.append(line)
+                    links.remove(link)
+            else:
+                if buffer:
+                    buffer.append(line)
+        elif buffer:
+            buffer.append(line)
+    else:
+        subject_data.append(buffer)
+    return subject_data
+
+
+def split_sections_naive(html_soup):
+    """returns the raw html of each block of subject data in the soup"""
+    subject_data = []
+    buffer = []
+    # html = html_soup.prettify().split('\n')
+    with open('ufv_class_data.html', 'r') as f: # TODO REMOVE
+        html = f.readlines()
+    for line in html:
+        if 'a name=\"' in line:
             if buffer:
-                if re.search('-------', line):
-                    subject_data.append(buffer)
-                    buffer = []
-                    break
+                subject_data.append(buffer)
+            buffer = [line]
+        elif buffer:
+            buffer.append(line)
+    subject_data.append(buffer)
+    return subject_data
 
 
 def parse_ufv_data(html_soup):
-    links = parse_ufv_links(html_soup.prettify())
-    subject_data = split_sections(html_soup, links)
+    # links = parse_ufv_links(html_soup.prettify())
+    with open('links.pk', 'rb') as f: # TODO REMOVE
+        links = pickle.load(f)
+    subject_data = split_sections_naive(html_soup)
     return links
 
 
@@ -68,8 +103,9 @@ def main():
     # html_data = get_data_from_site(site)
     # html_soup = BeautifulSoup(html_data)
     # store_data_locally(html_soup.pretify(), dest)
-    with open(dest,  'rb') as f:
-        html_soup = BeautifulSoup(f)
+    with open('soup.pk', 'rb') as f: # TODO REMOVE
+        html_soup = pickle.load(f)
+    html_soup = []
     parse_ufv_data(html_soup)
 
 
