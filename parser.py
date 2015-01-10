@@ -89,15 +89,6 @@ def split_sections_naive(html_soup):
     return subject_data
 
 
-def split_classes(subject_data):
-    subject_class_data = []
-    for subject in subject_data:
-        buf = []
-        state = 'out'
-        for line in subject:
-            if ''
-
-
 def parse_ufv_data(html_soup):
     # links = parse_ufv_links(html_soup.prettify())
     with open('links.pk', 'rb') as f: # TODO REMOVE
