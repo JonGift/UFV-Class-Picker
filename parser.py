@@ -76,7 +76,7 @@ def split_sections_naive(html_soup):
     subject_data = []
     buffer = []
     # html = html_soup.prettify().split('\n')
-    with open('ufv_class_data.html', 'r') as f: # TODO REMOVE
+    with open('ufv_class_data.html', 'r') as f:  # TODO REMOVE
         html = f.readlines()
     for line in html:
         if 'a name=\"' in line:
@@ -91,7 +91,7 @@ def split_sections_naive(html_soup):
 
 def parse_ufv_data(html_soup):
     # links = parse_ufv_links(html_soup.prettify())
-    with open('links.pk', 'rb') as f: # TODO REMOVE
+    with open('links.pk', 'rb') as f:  # TODO REMOVE
         links = pickle.load(f)
     subject_data = split_sections_naive(html_soup)
     return links
@@ -103,9 +103,8 @@ def main():
     # html_data = get_data_from_site(site)
     # html_soup = BeautifulSoup(html_data)
     # store_data_locally(html_soup.pretify(), dest)
-    with open('soup.pk', 'rb') as f: # TODO REMOVE
+    with open('soup.pk', 'rb') as f:  # TODO REMOVE
         html_soup = pickle.load(f)
-    html_soup = []
     parse_ufv_data(html_soup)
 
 
