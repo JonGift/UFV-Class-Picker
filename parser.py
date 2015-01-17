@@ -80,6 +80,7 @@ def parse_ufv_data(html_soup):
     subject_with_classes_data = split_classes(subject_data)
 
 
+
 def main():
     site = 'http://www.ufv.ca/arfiles/includes/201501-timetable-with-changes.htm'
     dest = 'ufv_class_data.html'
