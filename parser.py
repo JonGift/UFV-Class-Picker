@@ -78,6 +78,20 @@ def parse_ufv_data(html_soup):
         links = pickle.load(f)
     subject_data = split_sections_naive(html_soup)
     subject_with_classes_data = split_classes(subject_data)
+    texts = html_soup.findAll(text=True)
+
+    def visible(element):
+        if element.parent.name in ['style', 'script', '[document]', 'head', 'title']:
+            return False
+        elif re.match('<!--.*-->', str(element)):
+            return False
+        return True
+
+    visible_texts = u''.join([x for x in list(filter(visible, texts)) if x.strip()])
+    with open('testlong.txt', 'w+') as f:
+        f.write(visible_texts)
+    # with open('testshort.txt', 'w+') as f:
+    #     f.writelines([x for x in visible_texts if x.strip()])
 
 
 def main():
