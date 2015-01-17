@@ -80,15 +80,37 @@ def parse_ufv_data(html_soup):
     subject_with_classes_data = split_classes(subject_data)
 
 
+from html.parser import HTMLParser
+
+class MLStripper(HTMLParser):
+    def __init__(self):
+        self.reset()
+        self.strict = False
+        self.convert_charrefs= True
+        self.fed = []
+    def handle_data(self, d):
+        self.fed.append(d)
+    def get_data(self):
+        return ''.join(self.fed)
+
+
+def strip_tags(html):
+    s = MLStripper()
+    s.feed(html)
+    return s.get_data()
+
+
 def main():
     site = 'http://www.ufv.ca/arfiles/includes/201501-timetable-with-changes.htm'
     dest = 'ufv_class_data.html'
-    # html_data = get_data_from_site(site)
+    html_data = get_data_from_site(site)
+    stripped = strip_tags(html_data)
+    print(stripped)
     # html_soup = BeautifulSoup(html_data)
     # store_data_locally(html_soup.pretify(), dest)
-    with open('soup.pk', 'rb') as f:  # TODO REMOVE
-        html_soup = pickle.load(f)
-    parse_ufv_data(html_soup)
+    # with open('soup.pk', 'rb') as f:  # TODO REMOVE
+    #    html_soup = pickle.load(f)
+    # parse_ufv_data(html_soup)
 
 
 if __name__ == '__main__':
