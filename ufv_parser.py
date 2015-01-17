@@ -1,20 +1,7 @@
-import urllib.request
 import re
 from bs4 import BeautifulSoup
 import pickle
 import sys; sys.setrecursionlimit(90000)
-
-
-def get_data_from_site(site):
-    response = urllib.request.urlopen(site)
-    html = response.read()
-    text = html.decode('cp1252')
-    return text
-
-
-def store_data_locally(data, dest):
-    with open(dest, 'w') as f:
-        f.write(data)
 
 
 def table_check(tab, line):
@@ -92,18 +79,3 @@ def parse_ufv_data(html_soup):
         f.write(visible_texts)
     # with open('testshort.txt', 'w+') as f:
     #     f.writelines([x for x in visible_texts if x.strip()])
-
-
-def main():
-    site = 'http://www.ufv.ca/arfiles/includes/201501-timetable-with-changes.htm'
-    dest = 'ufv_class_data.html'
-    # html_data = get_data_from_site(site)
-    # html_soup = BeautifulSoup(html_data)
-    # store_data_locally(html_soup.pretify(), dest)
-    with open('soup.pk', 'rb') as f:  # TODO REMOVE
-        html_soup = pickle.load(f)
-    parse_ufv_data(html_soup)
-
-
-if __name__ == '__main__':
-    main()
