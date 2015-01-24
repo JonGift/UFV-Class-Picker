@@ -2,7 +2,9 @@ from reader import Reader
 from ufv_parser import parse_ufv_data
 import pickle
 from html.parser import HTMLParser
+from flask import Flask, request, jsonify
 
+app = Flask(__name__)
 
 class MLStripper(HTMLParser):
     def __init__(self):
@@ -23,7 +25,7 @@ def strip_tags(html):
     s.feed(html)
     return s.get_data()
 
-
+@app.route('/', methods=['GET'])
 def main():
     site = 'http://www.ufv.ca/arfiles/includes/201501-timetable-with-changes.htm'
     dest = 'ufv_class_data.html'
@@ -39,4 +41,6 @@ def main():
 
 
 if __name__ == '__main__':
+    app.debug = True
+    app.run(host='192.168.0.3')
     main()

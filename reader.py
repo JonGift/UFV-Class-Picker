@@ -2,7 +2,7 @@ import urllib.request
 
 
 class Reader(object):
-    def __main__(self, site, dest, encoding='utf_8'):
+    def __init__(self, site, dest, encoding='utf_8'):
         self.__dict__.update(locals())
         self.html = self._get_data_from_site()
         self._store_data_locally()
