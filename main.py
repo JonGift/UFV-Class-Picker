@@ -59,10 +59,13 @@ def main():
     dest = 'ufv_class_data.html'
     reader = Reader(site, dest, 'cp1252')
     html_data = reader.html
-    stripped = strip_tags(html_data)
+
+    import html2text
+    print(html2text.html2text(html_data))
+    #stripped = strip_tags(html_data)
     #entries = ['bob', 'jim']
     #return render_template('show_entries.html', entries=entries)
-    print(pull_info(stripped))
+    #print(pull_info(stripped))
     # html_soup = BeautifulSoup(html_data)
     # store_data_locally(html_soup.pretify(), dest)
     # with open('soup.pk', 'rb') as f:  # TODO REMOVE
