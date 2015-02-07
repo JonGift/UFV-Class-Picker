@@ -78,3 +78,17 @@ def parse_ufv_data(html_soup):
         links = pickle.load(f)
     subject_data = split_sections_naive(html_soup)
     subject_with_classes_data = split_classes(subject_data)
+
+
+def remove_struck_out_classes(text_data):
+    all_data_buf = []
+    single_class_buf = []
+    in_class = False
+    last_newline = True
+    for line in text_data:
+        if last_newline:
+            if re.search('\s+\d+'):
+                pass
+        if '\n' in line:
+            last_newline = True
+

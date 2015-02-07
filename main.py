@@ -6,7 +6,9 @@ from flask import Flask, request, jsonify, render_template
 import html2text
 import re
 
+
 app = Flask(__name__)
+
 
 class MLStripper(HTMLParser):
     def __init__(self):
@@ -26,6 +28,7 @@ def strip_tags(html):
     s = MLStripper()
     s.feed(html)
     return s.get_data()
+
 
 def pull_info(str_input):
     string_edit = str_input
