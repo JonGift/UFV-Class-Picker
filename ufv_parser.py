@@ -4,6 +4,22 @@ from bs4 import BeautifulSoup
 import pickle
 import sys; sys.setrecursionlimit(90000)
 
+class section:
+    def __init__(self):
+        self.class_list = None
+
+class individual_class:
+    def __init__(self):
+        self.name = None
+        self.course_number = None
+        self.credit_hours = None
+        self.price = None
+        self.prerequisites = None
+        self.professors = None
+        self.dates = None
+        self.class_number = None
+
+
 
 def get_data_from_site(site):
     response = urllib.request.urlopen(site)
@@ -44,6 +60,33 @@ def parse_ufv_links(data):
     return [x[0] for x in sub_names if x] # only returns lists that have data
 
 
+def split_sections(html_soup, links):
+    """returns the raw html of each block of subject data in the soup"""
+    links = links[:]
+    subject_data = []
+    buffer = []
+    # html = html_soup.prettify().split('\n')
+    with open('ufv_class_data.html', 'r') as f: # TODO REMOVE
+        html = f.readlines()
+    for line in html:
+        if 'name' in line:
+            for link in links:
+                if re.search(r'a\s*name\s*=\s*\"{}'.format(link), line):
+                    if buffer:
+                        subject_data.append(buffer)
+                        buffer = []
+                    buffer.append(line)
+                    links.remove(link)
+            else:
+                if buffer:
+                    buffer.append(line)
+        elif buffer:
+            buffer.append(line)
+    else:
+        subject_data.append(buffer)
+    return subject_data
+
+
 def split_sections_naive(html_soup):
     """returns the raw html of each block of subject data in the soup"""
     subject_data = []
@@ -62,22 +105,13 @@ def split_sections_naive(html_soup):
     return subject_data
 
 
-def split_classes(subject_data):
-    subject_class_data = []
-    for subject in subject_data:
-        subject_soup = BeautifulSoup(''.join(subject))
-        title = subject_soup.find('a', attrs={'name': re.compile('.*')}).text.strip()
-        classes = [x.prettify() for x in subject_soup.html.body.find_all('p', recursive=False)]
-        subject_class_data.append([title] + [classes])
-    return subject_class_data
-
-
 def parse_ufv_data(html_soup):
     # links = parse_ufv_links(html_soup.prettify())
     with open('links.pk', 'rb') as f:  # TODO REMOVE
         links = pickle.load(f)
     subject_data = split_sections_naive(html_soup)
-    subject_with_classes_data = split_classes(subject_data)
+    return links
+
 
 
 def remove_struck_out_classes(text_data):
