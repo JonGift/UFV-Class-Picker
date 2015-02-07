@@ -1,10 +1,13 @@
 from reader import Reader
+import html2text
 from ufv_parser import parse_ufv_data
 import pickle
 from html.parser import HTMLParser
 from flask import Flask, request, jsonify, render_template
 
+
 app = Flask(__name__)
+
 
 class MLStripper(HTMLParser):
     def __init__(self):
@@ -24,6 +27,7 @@ def strip_tags(html):
     s = MLStripper()
     s.feed(html)
     return s.get_data()
+
 
 def pull_info(str_input):
     string_edit = str_input
@@ -59,8 +63,8 @@ def main():
     dest = 'ufv_class_data.html'
     reader = Reader(site, dest, 'cp1252')
     html_data = reader.html
+    text_data = html2text.html2text(html_data)
 
-    import html2text
     print(html2text.html2text(html_data))
     #stripped = strip_tags(html_data)
     #entries = ['bob', 'jim']
