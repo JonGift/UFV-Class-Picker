@@ -3,6 +3,8 @@ from ufv_parser import parse_ufv_data
 import pickle
 from html.parser import HTMLParser
 from flask import Flask, request, jsonify, render_template
+import html2text
+import re
 
 app = Flask(__name__)
 
@@ -31,26 +33,31 @@ def pull_info(str_input):
 
     start_recording = False
     to_append = ''
-    previous_index = 0
     previous_letter = ''
     for index, letter in enumerate(string_edit):
-        if start_recording == True:
-            if letter == ' ' and previous_letter == ' ':
-                return_list.append(to_append)
-                to_append = ''
-                start_recording = False
-            elif letter != ' ':
-                print(letter)
-                ''.join((to_append, letter))
-        if previous_letter == '-':
-            if letter == ' ':
-                if string_edit[index+1].isupper() == True and string_edit[index + 2].isupper() == True:
-                    start_recording = True
+        if previous_letter == '-' and letter == '-' and (string_edit[index+1]) == ' ':
+            start_recording = True
 
-        previous_index = index
+        if start_recording == True:
+            if previous_letter == ' ' and letter == ' ':
+                if to_append != '' and to_append != ' ':
+                    return_list.append(to_append)
+                    to_append = ''
+                else:
+                    to_append = ''
+            elif letter != '\n':
+                if to_append == '' and letter == ' ':
+                    pass
+                to_append = ''.join((to_append, letter))
+            if previous_letter == '-' and letter == '-' and string_edit[index+1] == '-':
+                return_list.append('END BLOCK')
+                start_recording = False
+
         previous_letter = letter
 
-    return return_list
+    for i in range(len(return_list)):
+        print(return_list[i])
+    print('The length of return list is ' + str(len(return_list)))
 
 
 #@app.route('/', methods=['GET'])
@@ -59,10 +66,12 @@ def main():
     dest = 'ufv_class_data.html'
     reader = Reader(site, dest, 'cp1252')
     html_data = reader.html
-    stripped = strip_tags(html_data)
+   # stripped = strip_tags(html_data)
+    stripped = html2text.html2text(html_data)
     #entries = ['bob', 'jim']
-    #return render_template('show_entries.html', entries=entries)
-    print(pull_info(stripped))
+    # return render_template('show_entries.html', entries=entries)
+    pull_info(stripped)
+    #print(stripped)
     # html_soup = BeautifulSoup(html_data)
     # store_data_locally(html_soup.pretify(), dest)
     # with open('soup.pk', 'rb') as f:  # TODO REMOVE
