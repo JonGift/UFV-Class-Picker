@@ -4,6 +4,22 @@ from bs4 import BeautifulSoup
 import pickle
 import sys; sys.setrecursionlimit(90000)
 
+class section:
+    def __init__(self):
+        self.class_list = None
+
+class individual_class:
+    def __init__(self):
+        self.name = None
+        self.course_number = None
+        self.credit_hours = None
+        self.price = None
+        self.prerequisites = None
+        self.professors = None
+        self.dates = None
+        self.class_number = None
+
+
 
 def get_data_from_site(site):
     response = urllib.request.urlopen(site)
