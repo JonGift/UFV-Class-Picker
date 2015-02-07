@@ -4,6 +4,22 @@ from bs4 import BeautifulSoup
 import pickle
 import sys; sys.setrecursionlimit(90000)
 
+class section:
+    def __init__(self):
+        self.class_list = None
+
+class individual_class:
+    def __init__(self):
+        self.name = None
+        self.course_number = None
+        self.credit_hours = None
+        self.price = None
+        self.prerequisites = None
+        self.professors = None
+        self.dates = None
+        self.class_number = None
+
+
 
 def get_data_from_site(site):
     response = urllib.request.urlopen(site)
@@ -98,16 +114,15 @@ def parse_ufv_data(html_soup):
 
 
 
-def main():
-    site = 'http://www.ufv.ca/arfiles/includes/201501-timetable-with-changes.htm'
-    dest = 'ufv_class_data.html'
-    # html_data = get_data_from_site(site)
-    # html_soup = BeautifulSoup(html_data)
-    # store_data_locally(html_soup.pretify(), dest)
-    with open('soup.pk', 'rb') as f:  # TODO REMOVE
-        html_soup = pickle.load(f)
-    parse_ufv_data(html_soup)
+def remove_struck_out_classes(text_data):
+    all_data_buf = []
+    single_class_buf = []
+    in_class = False
+    last_newline = True
+    for line in text_data:
+        if last_newline:
+            if re.search('\s+\d+'):
+                pass
+        if '\n' in line:
+            last_newline = True
 
-
-if __name__ == '__main__':
-    main()
